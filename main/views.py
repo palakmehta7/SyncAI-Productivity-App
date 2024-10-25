@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render
-from .models import Project, Asignee
+from .models import Project, Asignee, Task
 
 
 def project_dashboard(request):
@@ -11,7 +11,7 @@ def project_dashboard(request):
     return render(request, 'project_dashboard.html', {'projects': projects, 'assignees': assignees})
 
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Project
 from .forms import TaskForm
 
