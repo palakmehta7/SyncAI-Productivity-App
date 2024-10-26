@@ -74,9 +74,11 @@ def sync_tasks(request):
         for task in tasks:
             task_completion_response = get_paginated_diffs(task, task_desc=task.desc)
             precentage_done, precentage_pending = task_completion_response
-            task.progress = int(precentage_done)
-            if precentage_pending == 0:
-                task.status = STATUSES['DONE']
+            task.progress = float(precentage_done)
+            if float(precentage_done) > 0:
+                task.status = STATUSES[1][0]  #IN_PROGRESS
+            if precentage_pending == '0':
+                task.status = STATUSES[2][0]  #DONE
             task.save()
         # Mock response (replace with actual data handling logic)
         return JsonResponse({"status": "success", "message": "Tasks synced successfully."})
