@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg
 
 
 STATUSES = (
@@ -56,3 +57,9 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.project.name}-{self.name}"
+    
+    def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
+        avg_progress = self.project.task_set.aggregate(avg=Avg("progress")).get("avg") or 0
+        self.project.progress = avg_progress
+        self.progress.save()
+        return super().save(force_insert, force_update, using, update_fields)
