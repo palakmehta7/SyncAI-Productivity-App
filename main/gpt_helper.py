@@ -35,7 +35,7 @@ def get_paginated_diffs(task, task_desc=""):
     if response.status_code == 200:
         diff_text = response.text  # This contains the diff output
         print("Git Diff for PR:")
-        pattern = r"done\s*=\s*(\d+)%\s*&\s*pending\s*=\s*(\d+)%"
+        pattern = r"done\s*=\s*(?P<done>[0-9.]+)%\s*&\s*pending\s*=\s*(?P<pending>[0-9.]+)%"
         evals = model.evaluate(task_desc, diff_text)
         task.summary = evals
         task.save()
