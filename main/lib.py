@@ -1,4 +1,11 @@
 import requests
+from main.models import Task
+import os
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
 def get_git_diff():
     """Fetch all PRs from GitHub."""
@@ -12,14 +19,12 @@ def get_all_prs():
     url = 'https://api.github.com/repos/palakmehta7/tasks/pulls'
 
     # Optionally, add your GitHub personal access token for authentication if needed
-    token = ''  # Replace with your token if required
-    headers = {
-        'Authorization': f'token {token}',
-        'Accept': 'application/vnd.github.v3+json'
-    }
+    # token = GITHUB_TOKEN
+    # headers = {'Authorization': f'Bearer {token}','Accept': 'application/vnd.github.v3+json'}
 
     # Make the GET request
-    response = requests.get(url, headers=headers)
+    # response = requests.get(url, headers=headers)
+    response = requests.get(url)
 
     # Check if the request was successful
     if response.status_code == 200:
@@ -27,7 +32,7 @@ def get_all_prs():
         all_pr_details = [{'pr_url': pr['url'], 'pr_description': pr['body'], 'pr_diff_url': pr['diff_url']} for pr in pr_data]  # Extract PR title and URL
         return all_pr_details
     else:
-        print(f'Error: {response.status_code} - {response.json()}')
+        print(f'Error: {response.status_code} - {response.text}')
         return []
 
 
@@ -44,15 +49,16 @@ def process_prs(projects):
     is_process_success = False
     try:
         print(f"\n debug_logs - 30 - process_prs() - projects = {projects}")
-            
         all_pr_details = get_all_prs()
         for pr_data in all_pr_details:
             pr_url = pr_data['pr_url']
             pr_description = pr_data['pr_description']
             pr_diff_url = pr_data['pr_diff_url']
-            
-            task_id = extract_task_id(pr_description)
-
+            if pr_description:
+                task_id = extract_task_id(pr_description)
+            else:
+                print(f"pr_description: {pr_description}---pr_data: {pr_data}")
+                continue
             if task_id:
                 # Check if the PR is already linked in the database
                 task_record = Task.objects.filter(id=task_id).first()

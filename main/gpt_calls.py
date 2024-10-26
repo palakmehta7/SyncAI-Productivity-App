@@ -1,7 +1,6 @@
 import os
 import openai
 from dotenv import load_dotenv
-import pandas as pd
 
 load_dotenv(".env")
 
@@ -39,7 +38,7 @@ class KShots:
             Also provide a conclusion on percentage of task done. Please provide your inputs on what
             all is remaining and how would you approach it. 
             Provide reasoning plus also provide percentage of tasks done and pending with keys:
-            done = x% & pending =y% (This is mandatory to be on last line)
+            done = x% & pending =y% (This is mandatory to be on last line and do not add any formatting for this line)
         """
     
     def create_jira_tasks_title_and_description(self, jira_description):
@@ -52,7 +51,8 @@ class KShots:
             messages=[
                 {"role": "system", "content": prompt },
                 {"role": "user", "content": f"jira description={jira_description}"},
-            ]
+            ],
+            temperature=0
         )
         return resp.choices[0].message.content
         
@@ -64,7 +64,8 @@ class KShots:
             messages=[
                 {"role": "system", "content": prompt },
                 {"role": "user", "content": f"jira description={jira_description} | git diff = {git_diff}"},
-            ]
+            ],
+            temperature=0
         )
         return resp.choices[0].message.content
     

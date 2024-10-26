@@ -17,7 +17,18 @@ class Asignee(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+class Board(models.Model):
+    name = models.CharField(max_length=2000)
+    created_at = models.DateTimeField("date created")
+    updated_at = models.DateTimeField("date updated")
+    last_synced_at = models.DateField("last synced at", blank=True, null=True, default=None)
+
+
+    def __str__(self):
+        return f"{self.name}"
+
 class Project(models.Model):
+    board = models.ForeignKey(Board, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=200)
     desc = models.CharField(max_length=2000)
     created_at = models.DateTimeField("date created")

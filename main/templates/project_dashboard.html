@@ -1,138 +1,166 @@
-<style>
-    /* Basic Reset */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
-
-    /* Page Container */
-    .container {
-        width: 80%;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    /* Project Section */
-    .project-section {
-        background-color: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        padding: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Project Title */
-    .project-section h2 {
-        font-size: 1.5em;
-        color: #333;
-        margin-bottom: 10px;
-    }
-
-    /* Project Details */
-    .project-section p {
-        font-size: 0.9em;
-        color: #555;
-        margin-bottom: 15px;
-    }
-
-    /* Task Table */
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    .table th, .table td {
-        padding: 10px;
-        text-align: left;
-    }
-
-    .table th {
-        background-color: #333;
-        color: #fff;
-        font-weight: bold;
-        border: 1px solid #ddd;
-    }
-
-    .table tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    .table tr:nth-child(odd) {
-        background-color: #fff;
-    }
-
-    .table td {
-        border: 1px solid #ddd;
-        color: #333;
-    }
-
-    /* Assignees List */
-    .project-section h3 {
-        font-size: 1.2em;
-        color: #333;
-        margin-bottom: 10px;
-    }
-
-    .assignee-list {
-        list-style-type: none;
-        padding-left: 15px;
-    }
-
-    .assignee-list li {
-        font-size: 0.9em;
-        color: #555;
-        margin-bottom: 5px;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .container {
-            width: 100%;
-            padding: 10px;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Dashboard</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
-    }
 
-    .delete-button {
-        background-color: #ff4d4d;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+        /* Page Container */
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    .delete-button:hover {
-        background-color: #ff1a1a;
-    }
+        /* Project Section */
+        .project-section {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-</style>
+        /* Project Title */
+        .project-section h2 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
 
-<div class="container">
-    <h1>Project Dashboard</h1>
+        /* Project Details */
+        .project-section p {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 15px;
+        }
 
-    {% for project in projects %}
-    <div class="project-section">
-        <h2>{{ project.desc }} - {{ project.progress }}%</h2>
-        <p>Created at: {{ project.created_at }} | Updated at: {{ project.updated_at }}</p>
+        /* Task Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Task Name</th>
-                    <th>Task Description</th>
-                    <th>Assignee</th>
-                    <th>Status</th>
-                    <th>Progress</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in project.task_set.all %}
-                    {% if not task.is_deleted %}
+        .table th, .table td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #333;
+            color: #fff;
+            font-weight: bold;
+            border: 1px solid #ddd;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        .table td {
+            border: 1px solid #ddd;
+            color: #333;
+        }
+
+        /* Assignees List */
+        .project-section h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .assignee-list {
+            list-style-type: none;
+            padding-left: 15px;
+        }
+
+        .assignee-list li {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+
+        .delete-button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
+            background-color: #ff1a1a;
+        }
+
+        .sync-container {
+            text-align: right; /* Aligns the button to the right */
+            margin-bottom: 20px; /* Adds some space below the button */
+        }
+
+        .sync-container .btn {
+            padding: 10px 15px;
+            background-color: #007bff; /* Button color */
+            color: white; /* Text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+
+        .sync-container .btn:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Project Dashboard</h1>
+
+        <div class="sync-container">
+            <button id="sync-button" class="btn">Sync Tasks</button>
+        </div>
+
+        {% for project in projects %}
+        <div class="project-section">
+            <h2>{{ project.desc }} - {{ project.progress }}%</h2>
+            <p>Created at: {{ project.created_at }} | Updated at: {{ project.updated_at }}</p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Task Description</th>
+                        <th>Assignee</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in project.task_set.all %}
+                        {% if not task.is_deleted %}
                         <tr>
                             <td>{{ task.name }}</td>
                             <td>{{ task.desc }}</td>
@@ -165,10 +193,48 @@
                                 </form>
                             </td>
                         </tr>
-                    {% endif %}
-                {% endfor %}
-            </tbody>            
-        </table>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const syncButton = document.getElementById("sync-button");
+
+            syncButton.addEventListener("click", function() {
+                this.textContent = "Syncing..."; // Change button text
+                this.disabled = true; // Disable button to prevent multiple clicks
+
+                fetch("{% url 'sync_tasks' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}" // Include CSRF token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Assuming the response is JSON
+                })
+                .then(data => {
+                    alert("Tasks synced successfully!");
+                    location.reload(); // Refresh the page to reflect changes
+                })
+                .catch(error => {
+                    alert("Error syncing tasks: " + error.message);
+                })
+                .finally(() => {
+                    this.textContent = "Sync Tasks"; // Reset button text
+                    this.disabled = false; // Enable button again
+                });
+            });
+        });
+    </script>
+</body>
+</html>
