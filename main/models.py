@@ -41,6 +41,7 @@ class Task(models.Model):
     progress = models.IntegerField(default=0)
     pr_id = models.CharField(max_length=100, blank=True, null=True, default=None)
     weightage = models.IntegerField(default=0)
+    is_deleted = models.BooleanField(default=False)  # Add this line
 
     def __str__(self):
         return f"{self.project.name}-{self.name}"
