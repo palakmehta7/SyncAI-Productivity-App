@@ -5,18 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Detail</title>
     <style>
-        /* Add basic styling */
+        /* Base styles for the page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container with increased width */
         .container {
             width: 80%;
-            margin: 0 auto;
+            max-width: 1200px;
+            margin: 40px auto;
             padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        /* Heading styles */
         h1 {
-            color: #333;
+            font-size: 2em;
+            color: #444;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
         }
+
+        /* Paragraph and label styles */
         p {
             font-size: 1em;
-            color: #555;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        p strong {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Progress bar styling with orange color */
+        .progress-container {
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            width: {{ task.progress }}%;
+            background-color: #ff9800;
+            text-align: center;
+            color: white;
+            font-size: 0.9em;
+            line-height: 20px;
+            transition: width 0.3s;
+        }
+
+        /* Button styling with orange color */
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff9800;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #e68a00;
         }
     </style>
 </head>
@@ -24,13 +87,21 @@
     <div class="container">
         <h1>{{ task.name }}</h1>
         <p><strong>Description:</strong> {{ task.desc }}</p>
+        <p><strong>AI Summary:</strong> {{ task.summary }}</p>
         <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+        
+        <!-- Progress bar section -->
         <p><strong>Progress:</strong> {{ task.progress }}%</p>
-        <p><strong>Assignee:</strong> {% if task.asignee %}{{ task.asignee.name }}{% else %}None{% endif %}</p>
+        <div class="progress-container">
+            <div class="progress-bar">{{ task.progress }}%</div>
+        </div>
 
+        <p><strong>Assignee:</strong> {% if task.asignee %}{{ task.asignee.name }}{% else %}None{% endif %}</p>
         <p><strong>Created At:</strong> {{ task.created_at }}</p>
         <p><strong>Updated At:</strong> {{ task.updated_at }}</p>
-        <a href="{% url 'project_dashboard' %}">Back to Dashboard</a>
+        
+        <!-- Back to Dashboard button -->
+        <a href="{% url 'project_dashboard' %}" class="back-btn">Back to Dashboard</a>
     </div>
 </body>
 </html>
