@@ -1,5 +1,6 @@
 import requests
 import re
+import time
 import os
 from dotenv import load_dotenv
 from gpt_calls import KShots
@@ -42,18 +43,3 @@ def get_paginated_diffs(owner, repo, pull_number, token, jira_description=""):
     else:
         print(f"Failed to retrieve diff: {response.status_code}")
         print(response.json())  # Print error message if available
-
-
-
-jira_description = """
-Add functionality to mark tasks as deleted permanently. Implement a delete button for each task that, when clicked, will remove the task from the list without the option for restoration. Ensure proper error handling and user confirmation before deletion.
-Acceptance criteria: It's important that we ask the confirmation when user clicks on delete button
-- 
-"""
-# Run the function to process the PR diffs in batches
-completed_summary = get_paginated_diffs(owner, repo, pull_number, token, jira_description)
-# final_results = model.evaluate(jira_description, completed_summary, json_resp=True)
-
-# print(final_results)
-
-

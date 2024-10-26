@@ -59,7 +59,6 @@ class KShots:
     
     def evaluate(self, jira_description, git_diff):
         prompt = self.__create_prompt()
-
         resp = client.chat.completions.create(
             model="gpt-4o-mini",  # or "gpt-4"
             messages=[
