@@ -4,10 +4,10 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render
-from .models import Project, Asignee, Task, Board
+from .models import Project, Asignee, Task, Board, STATUSES
 from main.lib import process_prs
 from django.shortcuts import redirect, get_object_or_404
-
+from .gpt_helper import get_paginated_diffs
 
 def project_dashboard(request):
     projects = Project.objects.prefetch_related('task_set')
@@ -58,7 +58,20 @@ def sync_tasks(request):
     if request.method == "POST":
         # Your logic to sync tasks with GitHub here
         # e.g., fetch PRs, update task statuses
+        projects = Project.objects.prefetch_related('task_set__asignee').all()
+        print(f"\n debug_logs - 33 - projects = {projects}")
 
+        is_process_success = process_prs(projects)
+        resp = {'is_process_success': is_process_success}
+        print(f"\n debug_logs - 8 - resp = {resp}")
+        tasks = Task.objects.filter(pr_id__isnull=False)
+        for task in tasks:
+            task_completion_response = get_paginated_diffs(task.pr_id, task_desc=task.desc)
+            precentage_done, precentage_pending = task_completion_response
+            task.progress = precentage_done
+            if precentage_pending == 0:
+                task.status = STATUSES['DONE']
+            task.save()
         # Mock response (replace with actual data handling logic)
         return JsonResponse({"status": "success", "message": "Tasks synced successfully."})
 
