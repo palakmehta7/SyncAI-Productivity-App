@@ -48,7 +48,7 @@ class Task(models.Model):
     updated_at = models.DateTimeField("date updated")
     status = models.CharField(max_length=20, choices=STATUSES)
     asignee = models.ForeignKey(Asignee, on_delete=models.DO_NOTHING, blank=True, null=True, default=None)
-    summary = models.CharField(max_length=10, blank=True, null=True, default=None)
+    summary = models.TextField(blank=True, null=True, default=None)
     progress = models.IntegerField(default=0)
     pr_id = models.CharField(max_length=100, blank=True, null=True, default=None)
     weightage = models.IntegerField(default=0)

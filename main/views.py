@@ -66,7 +66,7 @@ def sync_tasks(request):
         print(f"\n debug_logs - 8 - resp = {resp}")
         tasks = Task.objects.filter(pr_id__isnull=False)
         for task in tasks:
-            task_completion_response = get_paginated_diffs(task.pr_id, task_desc=task.desc)
+            task_completion_response = get_paginated_diffs(task, task_desc=task.desc)
             precentage_done, precentage_pending = task_completion_response
             task.progress = precentage_done
             if precentage_pending == 0:
