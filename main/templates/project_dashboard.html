@@ -95,6 +95,20 @@
             padding: 10px;
         }
     }
+
+    .delete-button {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .delete-button:hover {
+        background-color: #ff1a1a;
+    }
+
 </style>
 
 <div class="container">
@@ -113,27 +127,48 @@
                     <th>Assignee</th>
                     <th>Status</th>
                     <th>Progress</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
                 {% for task in project.task_set.all %}
-                <tr>
-                    <td>{{ task.name }}</td>
-                    <td>{{ task.desc }}</td>
-                    <td>
-                        {% if task.asignee %}
-                            {{ task.asignee.name }}
-                        {% else %}
-                            Unassigned
-                        {% endif %}
-                    </td>
-                    <td>{{ task.get_status_display }}</td>
-                    <td>{{ task.progress }}%</td>
-                </tr>
+                    {% if not task.is_deleted %}
+                        <tr>
+                            <td>{{ task.name }}</td>
+                            <td>{{ task.desc }}</td>
+                            <td>
+                                <div class="custom-dropdown">
+                                    <button class="dropdown-button">
+                                        {% if task.asignee %}
+                                            {{ task.asignee.name }}
+                                        {% else %}
+                                            Select Assignee
+                                        {% endif %}
+                                    </button>
+                                    <div class="dropdown-content">
+                                        <form method="POST" action="{% url 'delete_task' task.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                                            {% for asignee in task.project.asignee_set.all %}
+                                                <div class="dropdown-item" data-id="{{ asignee.id }}">{{ asignee.name }}</div>
+                                            {% endfor %}
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ task.get_status_display }}</td>
+                            <td>{{ task.progress }}%</td>
+                            <td>
+                                <form method="POST" action="{% url 'delete_task' task.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-button">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
-            </tbody>
+            </tbody>            
         </table>
-
     </div>
     {% endfor %}
 </div>

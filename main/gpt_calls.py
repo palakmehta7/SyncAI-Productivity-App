@@ -36,32 +36,41 @@ class KShots:
             I'll be giving you Jira description and git diff.
             Find how much tasks have been achieved.
             Please provide reasoning why you are marking a task as completed or not completed
-            Also provide a conclusion on percentage of task done.
-            Format the response in json as follows: {
-                "tasks completed": ...,
-                "tasks not completed": ...,
-                "percentage of tasks completed": ...,
-                "conclusion": ...
-            }
+            Also provide a conclusion on percentage of task done. Please provide your inputs on what
+            all is remaining and how would you approach it. 
+            Provide reasoning plus also provide percentage of tasks done and pending with keys:
+            done = x% & pending =y% (This is mandatory to be on last line)
         """
     
-    def evaluate(self, jira_description, git_diff):
-        # chain of thought ->
-        # k-shot
-        # PROMPT - MENTION CHAR LIMIT FOR GENERATED TWEETS - CHECK FOR TW LIMIT
-
+    def create_jira_tasks_title_and_description(self, jira_description):
+        prompt = f"""
+                Act as a technical project manager. Please create backend tasks based on jira description
+                Jira description: {jira_description}
+            """
         resp = client.chat.completions.create(
             model="gpt-4o-mini",  # or "gpt-4"
             messages=[
-                {"role": "system", "content": self.__create_prompt() },
+                {"role": "system", "content": prompt },
+                {"role": "user", "content": f"jira description={jira_description}"},
+            ]
+        )
+        return resp.choices[0].message.content
+        
+    
+    def evaluate(self, jira_description, git_diff):
+        prompt = self.__create_prompt()
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",  # or "gpt-4"
+            messages=[
+                {"role": "system", "content": prompt },
                 {"role": "user", "content": f"jira description={jira_description} | git diff = {git_diff}"},
             ]
         )
         return resp.choices[0].message.content
     
 
-model = KShots(shot=5)
-print(model.evaluate(jira_description, diff_text))
+# model = KShots(shot=5)
+# print(model.evaluate(jira_description, diff_text))
 # while True:
 #     user_query = input("Enter Tweet: ")
 #     response = model.evaluate(user_query)
