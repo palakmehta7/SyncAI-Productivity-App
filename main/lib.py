@@ -1,6 +1,7 @@
 import requests
 from main.models import Task
 import os
+import re
 from dotenv import load_dotenv
 
 load_dotenv(".env")
@@ -19,18 +20,32 @@ def get_all_prs():
     url = 'https://api.github.com/repos/palakmehta7/tasks/pulls'
 
     # Optionally, add your GitHub personal access token for authentication if needed
-    # token = GITHUB_TOKEN
-    # headers = {'Authorization': f'Bearer {token}','Accept': 'application/vnd.github.v3+json'}
-
+    token = GITHUB_TOKEN
+    headers = {'Authorization': f'Bearer {token}','Accept': 'application/vnd.github.v3+json'}
+    params = {
+        "state": "all",  # "open", "closed", or "all"
+        "per_page": 100,  # Number of PRs per page (max 100)
+        "page": 1         # Starting page number
+    }
     # Make the GET request
-    # response = requests.get(url, headers=headers)
-    response = requests.get(url)
+    response = requests.get(url, params=params)
+    pattern = "^.*TASK_TRACK_ID:\s*(?P<ticket_no>\d+).*$"
 
+    # TASK_TRACK_ID: <number>
     # Check if the request was successful
     if response.status_code == 200:
         pr_data = response.json()
-        all_pr_details = [{'pr_url': pr['url'], 'pr_description': pr['body'], 'pr_diff_url': pr['diff_url']} for pr in pr_data]  # Extract PR title and URL
-        return all_pr_details
+        return [
+            {
+                'pr_url': pr['url'], 
+                'pr_description': pr['body'], 
+                'pr_diff_url': pr['diff_url'],
+                'ticket_id': re.match(pattern, pr["body"]).groupdict()["ticket_no"]
+            } 
+            for pr in pr_data
+            if pr.get("body") and re.match(pattern, pr.get("body", ""))
+        ]  # Extract PR title and URL
+
     else:
         print(f'Error: {response.status_code} - {response.text}')
         return []
@@ -50,12 +65,13 @@ def process_prs(projects):
     try:
         print(f"\n debug_logs - 30 - process_prs() - projects = {projects}")
         all_pr_details = get_all_prs()
+        print(all_pr_details)
         for pr_data in all_pr_details:
             pr_url = pr_data['pr_url']
             pr_description = pr_data['pr_description']
             pr_diff_url = pr_data['pr_diff_url']
             if pr_description:
-                task_id = extract_task_id(pr_description)
+                task_id = pr_data["ticket_id"]
             else:
                 print(f"pr_description: {pr_description}---pr_data: {pr_data}")
                 continue
@@ -63,7 +79,7 @@ def process_prs(projects):
                 # Check if the PR is already linked in the database
                 task_record = Task.objects.filter(id=task_id).first()
                 if task_record:
-                    task_record.update({'pr_id': pr_url})
+                    task_record.update({'pr_id': task_id})
                     is_process_success = True
                 else:
                     print("Error - in process_prs")
