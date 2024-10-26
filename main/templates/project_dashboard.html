@@ -162,7 +162,8 @@
                     {% for task in project.task_set.all %}
                         {% if not task.is_deleted %}
                         <tr>
-                            <td>{{ task.name }}</td>
+                            <td><a href="{% url 'task_detail' task.id %}">{{ task.name }}</a></td>
+
                             <td>{{ task.desc }}</td>
                             <td>
                                 <div class="custom-dropdown">
