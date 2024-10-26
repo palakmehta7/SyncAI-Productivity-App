@@ -37,6 +37,7 @@ def get_all_prs():
         pr_data = response.json()
         return [
             {
+                "pr_id": pr["url"].split("/")[-1],
                 'pr_url': pr['url'], 
                 'pr_description': pr['body'], 
                 'pr_diff_url': pr['diff_url'],
@@ -79,7 +80,8 @@ def process_prs(projects):
                 # Check if the PR is already linked in the database
                 task_record = Task.objects.filter(id=task_id).first()
                 if task_record:
-                    task_record.update({'pr_id': task_id})
+                    task_record.pr_id = pr_data["pr_id"]
+                    task_record.save()
                     is_process_success = True
                 else:
                     print("Error - in process_prs")
