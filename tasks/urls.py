@@ -17,10 +17,8 @@ Including another URLconf
 # project/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from tasks.views import my_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),  # Replace 'yourapp' with your app name
-    path("get_pr_summary/", my_view, name="get_pr_summary_view"),
 ]
