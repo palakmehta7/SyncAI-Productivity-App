@@ -58,8 +58,8 @@ class Task(models.Model):
     def __str__(self):
         return f"{self.project.name}-{self.name}"
     
-    def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
-        avg_progress = self.project.task_set.aggregate(avg=Avg("progress")).get("avg") or 0
-        self.project.progress = avg_progress
+    def save(self, *args, **kwargs):
+        avg_progress = self.project.task_set.filter(is_deleted=False).aggregate(avg=Avg("progress")).get("avg") or 0
+        self.project.progress = int(avg_progress)
         self.project.save()
-        return super().save(force_insert, force_update, using, update_fields)
+        super(Task, self).save(*args, **kwargs)

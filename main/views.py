@@ -68,7 +68,7 @@ def sync_tasks(request):
         for task in tasks:
             task_completion_response = get_paginated_diffs(task, task_desc=task.desc)
             precentage_done, precentage_pending = task_completion_response
-            task.progress = precentage_done
+            task.progress = int(precentage_done)
             if precentage_pending == 0:
                 task.status = STATUSES['DONE']
             task.save()
