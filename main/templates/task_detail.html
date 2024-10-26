@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Detail</title>
+    <style>
+        /* Add basic styling */
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 1em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ task.name }}</h1>
+        <p><strong>Description:</strong> {{ task.desc }}</p>
+        <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+        <p><strong>Progress:</strong> {{ task.progress }}%</p>
+        <p><strong>Assignee:</strong> {% if task.asignee %}{{ task.asignee.name }}{% else %}None{% endif %}</p>
+
+        <p><strong>Created At:</strong> {{ task.created_at }}</p>
+        <p><strong>Updated At:</strong> {{ task.updated_at }}</p>
+        <a href="{% url 'project_dashboard' %}">Back to Dashboard</a>
+    </div>
+</body>
+</html>
