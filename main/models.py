@@ -61,5 +61,5 @@ class Task(models.Model):
     def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
         avg_progress = self.project.task_set.aggregate(avg=Avg("progress")).get("avg") or 0
         self.project.progress = avg_progress
-        self.progress.save()
+        self.project.save()
         return super().save(force_insert, force_update, using, update_fields)
