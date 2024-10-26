@@ -3,3 +3,5 @@
 tasks/__pycache__/settings.cpython-38.pyc
 db.sqlite3
 *.env
+.env
+*/.env

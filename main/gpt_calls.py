@@ -36,7 +36,10 @@ class KShots:
             I'll be giving you Jira description and git diff.
             Find how much tasks have been achieved.
             Please provide reasoning why you are marking a task as completed or not completed
-            Also provide a conclusion on percentage of task done.
+            Also provide a conclusion on percentage of task done. Please provide your inputs on what
+            all is remaining and how would you approach it. 
+            Provide reasoning plus also provide percentage of tasks done and pending with keys:
+            done = x% & pending =y% (This is mandatory to be on last line)
         """
     
     def create_jira_tasks_title_and_description(self, jira_description):
@@ -54,21 +57,8 @@ class KShots:
         return resp.choices[0].message.content
         
     
-    def evaluate(self, jira_description, git_diff, json_resp=False):
-        # chain of thought ->
-        # k-shot
-        # PROMPT - MENTION CHAR LIMIT FOR GENERATED TWEETS - CHECK FOR TW LIMIT
+    def evaluate(self, jira_description, git_diff):
         prompt = self.__create_prompt()
-        if json_resp:
-            prompt += """
-                Always return results in following json format
-                {
-                    "tasks completed": ...,
-                    "tasks not completed": ...,
-                    "percentage of tasks completed": ...,
-                    "conclusion": ...
-                }
-            """
 
         resp = client.chat.completions.create(
             model="gpt-4o-mini",  # or "gpt-4"
