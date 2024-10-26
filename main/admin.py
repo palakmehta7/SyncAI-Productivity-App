@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Project, Task, Asignee
+from .models import Project, Task, Asignee, Board
+
+# Board Model
+class BoardAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name',  'created_at', 'updated_at')
+
+    def __str__(self):
+        return f"{self.desc} - {self.progress}%"  # Customize Project's display name
 
 # Project Model
 class ProjectAdmin(admin.ModelAdmin):
@@ -12,6 +19,7 @@ class ProjectAdmin(admin.ModelAdmin):
 # Task Model
 class TaskAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'desc', 'project', 'asignee', 'created_at', 'updated_at', 'status', 'summary', 'progress')
+    list_filter = ('project', 'is_deleted')
 
     def __str__(self):
         return f"{self.desc} - {self.status} - {self.progress}%"  # Customize Task's display name
@@ -29,3 +37,4 @@ class AsigneeAdmin(admin.ModelAdmin):
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Task, TaskAdmin)
 admin.site.register(Asignee, AsigneeAdmin)
+admin.site.register(Board, BoardAdmin)
