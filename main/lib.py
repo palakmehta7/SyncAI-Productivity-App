@@ -31,16 +31,6 @@ def get_all_prs():
         return []
 
 
-def link_task_to_pr(pr_number, task_id):
-    """Link the task ID to the PR (mock implementation)."""
-    # Replace with actual linking logic (API call or database update)
-    # This is where you would handle the linking in your application
-    print(f"Linking Task ID {task_id} to PR #{pr_number}")
-    # Update your database or make an API call to link
-    pr = PullRequest.objects.get(pr_number=pr_number)
-    pr.linked = True
-    pr.save()
-
 def extract_task_id(description):
     """Extract the task ID from the PR description."""
     # Replace with your actual logic to extract the task ID
@@ -65,9 +55,9 @@ def process_prs(projects):
 
             if task_id:
                 # Check if the PR is already linked in the database
-                task_records = Task.objects.filter(id=task_id)
-                if task_records:
-                    task_records.update({'pr_id': pr_url})
+                task_record = Task.objects.filter(id=task_id).first()
+                if task_record:
+                    task_record.update({'pr_id': pr_url})
                     is_process_success = True
                 else:
                     print("Error - in process_prs")
